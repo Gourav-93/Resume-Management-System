@@ -2,11 +2,16 @@ package com.backend.resumemanagement.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.resumemanagement.entity.Resume;
 import com.backend.resumemanagement.service.ResumeService;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/resumes")
@@ -25,15 +30,13 @@ public class ResumeController {
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String phone,
-            @RequestParam MultipartFile file
-    ) {
+            @RequestParam MultipartFile file) {
 
         return resumeService.uploadResume(
                 name,
                 email,
                 phone,
-                file
-        );
+                file);
     }
 
     // Get All Resumes
@@ -57,5 +60,32 @@ public class ResumeController {
         resumeService.deleteResume(id);
 
         return "Resume deleted successfully";
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadResume(@PathVariable Long id) {
+
+        Resume resume = resumeService.getResumeById(id);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + resume.getFileName())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resumeService.downloadResume(id));
+    }
+
+    @PutMapping("/{id}")
+    public Resume updateResume(
+            @PathVariable Long id,
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String phone) {
+
+        return resumeService.updateResume(
+                id,
+                name,
+                email,
+                phone);
     }
 }

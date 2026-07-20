@@ -28,8 +28,7 @@ public class ResumeService {
             String name,
             String email,
             String phone,
-            MultipartFile file
-    ) {
+            MultipartFile file) {
 
         try {
 
@@ -44,8 +43,7 @@ public class ResumeService {
             Files.copy(
                     file.getInputStream(),
                     path,
-                    StandardCopyOption.REPLACE_EXISTING
-            );
+                    StandardCopyOption.REPLACE_EXISTING);
 
             Resume resume = new Resume();
 
@@ -74,8 +72,7 @@ public class ResumeService {
     public Resume getResumeById(Long id) {
 
         return resumeRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Resume not found"));
+                .orElseThrow(() -> new RuntimeException("Resume not found"));
     }
 
     // Delete Resume
@@ -95,5 +92,31 @@ public class ResumeService {
 
             throw new RuntimeException("File delete failed");
         }
+    }
+
+    public byte[] downloadResume(Long id) {
+        Resume resume = getResumeById(id);
+        try {
+            return Files.readAllBytes(
+                    Paths.get(resume.getFilePath()));
+
+        } catch (IOException e) {
+            throw new RuntimeException("File download failed");
+        }
+    }
+
+    public Resume updateResume(
+            Long id,
+            String name,
+            String email,
+            String phone) {
+
+        Resume resume = getResumeById(id);
+
+        resume.setName(name);
+        resume.setEmail(email);
+        resume.setPhone(phone);
+
+        return resumeRepository.save(resume);
     }
 }

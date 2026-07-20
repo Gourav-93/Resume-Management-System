@@ -20,8 +20,7 @@ public class JwtService {
                 .setIssuedAt(new Date())
                 .setExpiration(
                         new Date(
-                                System.currentTimeMillis()
-                                        + 1000 * 60 * 60
+                                System.currentTimeMillis() + 1000 * 60 * 60
                         )
                 )
                 .signWith(
@@ -29,5 +28,15 @@ public class JwtService {
                         secretKey
                 )
                 .compact();
+    }
+
+    public String getEmail(String token) {
+
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 }

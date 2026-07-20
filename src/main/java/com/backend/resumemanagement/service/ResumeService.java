@@ -8,20 +8,23 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.resumemanagement.entity.Resume;
+import com.backend.resumemanagement.entity.User;
 import com.backend.resumemanagement.repository.ResumeRepository;
+import com.backend.resumemanagement.repository.UserRepository;
 
 @Service
 public class ResumeService {
 
-    private final ResumeRepository resumeRepository;
+    @Autowired
+    private ResumeRepository resumeRepository;
 
-    public ResumeService(ResumeRepository resumeRepository) {
-        this.resumeRepository = resumeRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     // Upload Resume
     public Resume uploadResume(
@@ -33,29 +36,42 @@ public class ResumeService {
 
         try {
 
+            // User ko email se find karna
+            User user = userRepository
+                    .findByEmail(email)
+                    .orElseThrow(() ->
+                            new RuntimeException("User not found"));
+
+            // Resume folder
             Path folder = Paths.get("uploads/resumes");
 
             Files.createDirectories(folder);
 
+            // File name
             String fileName = file.getOriginalFilename();
 
+            // File path
             Path path = folder.resolve(fileName);
 
+            // File save
             Files.copy(
                     file.getInputStream(),
                     path,
                     StandardCopyOption.REPLACE_EXISTING);
 
+            // Resume object
             Resume resume = new Resume();
 
             resume.setName(name);
             resume.setEmail(email);
             resume.setPhone(phone);
             resume.setSkills(skills);
+            resume.setUser(user);
             resume.setFileName(fileName);
             resume.setFilePath(path.toString());
             resume.setUploadedAt(LocalDateTime.now());
 
+            // Database me save
             return resumeRepository.save(resume);
 
         } catch (IOException e) {
@@ -74,7 +90,8 @@ public class ResumeService {
     public Resume getResumeById(Long id) {
 
         return resumeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resume not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Resume not found"));
     }
 
     // Delete Resume
@@ -84,7 +101,8 @@ public class ResumeService {
 
         try {
 
-            Path filePath = Paths.get(resume.getFilePath());
+            Path filePath =
+                    Paths.get(resume.getFilePath());
 
             Files.deleteIfExists(filePath);
 
@@ -96,41 +114,32 @@ public class ResumeService {
         }
     }
 
+    // Download Resume
     public byte[] downloadResume(Long id) {
+
         Resume resume = getResumeById(id);
+
         try {
+
             return Files.readAllBytes(
                     Paths.get(resume.getFilePath()));
 
         } catch (IOException e) {
+
             throw new RuntimeException("File download failed");
         }
     }
 
-    public Resume updateResume(
-            Long id,
-            String name,
-            String email,
-            String phone,
-            String skills
-        ) {
-
-        Resume resume = getResumeById(id);
-
-        resume.setName(name);
-        resume.setEmail(email);
-        resume.setPhone(phone);
-        resume.setSkills(skills);
-
-        return resumeRepository.save(resume);
-    }
-
+    // Search Resume By Name
     public List<Resume> searchResume(String name) {
+
         return resumeRepository
                 .findByNameContainingIgnoreCase(name);
     }
 
+    // Search Resume By Skills
     public List<Resume> searchBySkills(String skills) {
+
         return resumeRepository
                 .findBySkillsContainingIgnoreCase(skills);
     }

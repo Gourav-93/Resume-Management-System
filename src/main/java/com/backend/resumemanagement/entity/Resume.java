@@ -23,6 +23,8 @@ public class Resume {
 
     private String phone;
 
+    private String skills;
+
     private String fileName;
 
     private String filePath;

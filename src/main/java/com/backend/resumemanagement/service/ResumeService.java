@@ -28,6 +28,7 @@ public class ResumeService {
             String name,
             String email,
             String phone,
+            String skills,
             MultipartFile file) {
 
         try {
@@ -50,6 +51,7 @@ public class ResumeService {
             resume.setName(name);
             resume.setEmail(email);
             resume.setPhone(phone);
+            resume.setSkills(skills);
             resume.setFileName(fileName);
             resume.setFilePath(path.toString());
             resume.setUploadedAt(LocalDateTime.now());
@@ -109,14 +111,27 @@ public class ResumeService {
             Long id,
             String name,
             String email,
-            String phone) {
+            String phone,
+            String skills
+        ) {
 
         Resume resume = getResumeById(id);
 
         resume.setName(name);
         resume.setEmail(email);
         resume.setPhone(phone);
+        resume.setSkills(skills);
 
         return resumeRepository.save(resume);
+    }
+
+    public List<Resume> searchResume(String name) {
+        return resumeRepository
+                .findByNameContainingIgnoreCase(name);
+    }
+
+    public List<Resume> searchBySkills(String skills) {
+        return resumeRepository
+                .findBySkillsContainingIgnoreCase(skills);
     }
 }

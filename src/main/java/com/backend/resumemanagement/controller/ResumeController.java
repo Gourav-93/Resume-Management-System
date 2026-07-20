@@ -30,12 +30,14 @@ public class ResumeController {
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String phone,
+            @RequestParam String skills,
             @RequestParam MultipartFile file) {
 
         return resumeService.uploadResume(
                 name,
                 email,
                 phone,
+                skills,
                 file);
     }
 
@@ -44,13 +46,6 @@ public class ResumeController {
     public List<Resume> getAllResumes() {
 
         return resumeService.getAllResumes();
-    }
-
-    // Get Resume By ID
-    @GetMapping("/{id}")
-    public Resume getResumeById(@PathVariable Long id) {
-
-        return resumeService.getResumeById(id);
     }
 
     // Delete Resume
@@ -80,12 +75,34 @@ public class ResumeController {
             @PathVariable Long id,
             @RequestParam String name,
             @RequestParam String email,
-            @RequestParam String phone) {
+            @RequestParam String phone,
+            @RequestParam String skills) {
 
         return resumeService.updateResume(
                 id,
                 name,
                 email,
-                phone);
+                phone,
+                skills);
+    }
+
+    @GetMapping("/search")
+    public List<Resume> searchResume(
+            @RequestParam String name) {
+
+        return resumeService.searchResume(name);
+    }
+
+    @GetMapping("/search/skills")
+    public List<Resume> searchBySkills(
+            @RequestParam String skills) {
+
+        return resumeService.searchBySkills(skills);
+    }
+
+    @GetMapping("/{id}")
+    public Resume getResumeById(@PathVariable Long id) {
+
+        return resumeService.getResumeById(id);
     }
 }

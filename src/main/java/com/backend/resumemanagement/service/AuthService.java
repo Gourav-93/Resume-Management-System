@@ -28,12 +28,13 @@ public class AuthService {
 
     // Register
     public User register(User user) {
+
         user.setPassword(
                 passwordEncoder.encode(
-                        user.getPassword()
-                )
-        );
+                        user.getPassword()));
+
         user.setRole("USER");
+
         return userRepository.save(user);
     }
 
@@ -41,26 +42,27 @@ public class AuthService {
     public String login(
             String email,
             String password) {
-        User user = userRepository
-                .findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "User not found"
-                        )
-                );
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "User not found"));
+
         boolean passwordMatch =
                 passwordEncoder.matches(
                         password,
-                        user.getPassword()
-                );
+                        user.getPassword());
+
         if (!passwordMatch) {
+
             throw new RuntimeException(
-                    "Invalid password"
-            );
+                    "Invalid password");
         }
+
         return jwtService.generateToken(
                 user.getEmail(),
-                user.getRole()
-        );
+                user.getRole());
     }
 }

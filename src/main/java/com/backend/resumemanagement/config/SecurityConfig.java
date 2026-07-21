@@ -20,8 +20,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
+            HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -34,16 +33,28 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // Public APIs
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login"
                         ).permitAll()
 
+                        // Admin APIs
                         .requestMatchers(
                                 "/api/admin/**"
                         ).hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                        // User APIs
+                        .requestMatchers(
+                                "/api/user/**",
+                                "/api/resumes/**"
+                        ).hasAnyRole(
+                                "USER",
+                                "ADMIN"
+                        )
+
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .addFilterBefore(

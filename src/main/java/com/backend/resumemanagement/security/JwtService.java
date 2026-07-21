@@ -12,41 +12,71 @@ public class JwtService {
 
         private final String secretKey = "mySecretKeyForResumeManagementSystem123456789";
 
+        // Generate Token
         public String generateToken(
                         String email,
                         String role) {
 
                 return Jwts.builder()
+
                                 .setSubject(email)
-                                .claim("role", role)
-                                .setIssuedAt(new Date())
+
+                                .claim(
+                                                "role",
+                                                role)
+
+                                .setIssuedAt(
+                                                new Date())
+
                                 .setExpiration(
                                                 new Date(
                                                                 System.currentTimeMillis()
                                                                                 + 1000 * 60 * 60))
+
                                 .signWith(
                                                 SignatureAlgorithm.HS256,
                                                 secretKey)
+
                                 .compact();
         }
 
-        public String getEmail(String token) {
+        // Get Email
+        public String getEmail(
+                        String token) {
 
                 return Jwts.parser()
-                                .setSigningKey(secretKey)
+
+                                .setSigningKey(
+                                                secretKey)
+
                                 .build()
-                                .parseClaimsJws(token)
+
+                                .parseClaimsJws(
+                                                token)
+
                                 .getBody()
+
                                 .getSubject();
         }
 
-        public String getRole(String token) {
+        // Get Role
+        public String getRole(
+                        String token) {
 
                 return Jwts.parser()
-                                .setSigningKey(secretKey)
+
+                                .setSigningKey(
+                                                secretKey)
+
                                 .build()
-                                .parseClaimsJws(token)
+
+                                .parseClaimsJws(
+                                                token)
+
                                 .getBody()
-                                .get("role", String.class);
+
+                                .get(
+                                                "role",
+                                                String.class);
         }
 }

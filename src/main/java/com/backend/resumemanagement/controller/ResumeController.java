@@ -6,8 +6,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.backend.resumemanagement.entity.Resume;
 import com.backend.resumemanagement.service.ResumeService;
@@ -25,29 +36,31 @@ public class ResumeController {
 
     // Upload Resume
     @PostMapping("/upload")
-public Resume uploadResume(
-        @RequestParam String name,
-        @RequestParam String phone,
-        @RequestParam String skills,
-        @RequestParam MultipartFile file,
-        Authentication authentication) {
+    public Resume uploadResume(
+            @RequestParam String name,
+            @RequestParam String phone,
+            @RequestParam String skills,
+            @RequestParam MultipartFile file,
+            Authentication authentication) {
 
-    String email = authentication.getName();
+        String email = authentication.getName();
 
-    return resumeService.uploadResume(
-            name,
-            email,
-            phone,
-            skills,
-            file
-    );
-}
+        return resumeService.uploadResume(
+                name,
+                email,
+                phone,
+                skills,
+                file);
+    }
 
-    // Get All Resumes
-    @GetMapping
-    public List<Resume> getAllResumes() {
+    // Get My Resumes
+    @GetMapping("/my-resumes")
+    public List<Resume> getMyResumes(
+            Authentication authentication) {
 
-        return resumeService.getAllResumes();
+        String email = authentication.getName();
+
+        return resumeService.getMyResumes(email);
     }
 
     // Search By Name
@@ -66,16 +79,6 @@ public Resume uploadResume(
         return resumeService.searchBySkills(skills);
     }
 
-    // Get My Resumes
-    @GetMapping("/my-resumes")
-    public List<Resume> getMyResumes(
-            Authentication authentication) {
-
-        String email = authentication.getName();
-
-        return resumeService.getMyResumes(email);
-    }
-
     // Download Resume
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadResume(
@@ -83,12 +86,16 @@ public Resume uploadResume(
             Authentication authentication) {
 
         String email = authentication.getName();
+
         Resume resume = resumeService.checkOwner(id, email);
+
         return ResponseEntity.ok()
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=" + resume.getFileName())
-                .contentType(MediaType.APPLICATION_PDF)
+                        "attachment; filename="
+                                + resume.getFileName())
+                .contentType(
+                        MediaType.APPLICATION_PDF)
                 .body(
                         resumeService.downloadResume(id));
     }
@@ -98,19 +105,21 @@ public Resume uploadResume(
     public Resume updateResume(
             @PathVariable Long id,
             @RequestParam String name,
-            @RequestParam String email,
             @RequestParam String phone,
             @RequestParam String skills,
+            @RequestParam(required = false) MultipartFile file,
             Authentication authentication) {
 
-        String userEmail = authentication.getName();
-        resumeService.checkOwner(id, userEmail);
+        String email = authentication.getName();
+
+        resumeService.checkOwner(id, email);
+
         return resumeService.updateResume(
                 id,
                 name,
-                email,
                 phone,
-                skills);
+                skills,
+                file);
     }
 
     // Delete Resume
@@ -118,9 +127,13 @@ public Resume uploadResume(
     public String deleteResume(
             @PathVariable Long id,
             Authentication authentication) {
+
         String email = authentication.getName();
+
         resumeService.checkOwner(id, email);
+
         resumeService.deleteResume(id);
+
         return "Resume deleted successfully";
     }
 
@@ -129,7 +142,31 @@ public Resume uploadResume(
     public Resume getResumeById(
             @PathVariable Long id,
             Authentication authentication) {
+
         String email = authentication.getName();
+
         return resumeService.checkOwner(id, email);
     }
+
+    // Preview Resume
+    @GetMapping("/preview/{id}")
+    public ResponseEntity<byte[]> previewResume(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        Resume resume = resumeService.checkOwner(id, email);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename="
+                                + resume.getFileName())
+                .contentType(
+                        MediaType.APPLICATION_PDF)
+                .body(
+                        resumeService.downloadResume(id));
+    }
+
 }

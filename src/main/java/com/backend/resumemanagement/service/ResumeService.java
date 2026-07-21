@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.resumemanagement.entity.Resume;
@@ -176,7 +177,7 @@ public class ResumeService {
             Files.createDirectories(folder);
 
             // Original File Name
-            String originalFileName = file.getOriginalFilename();
+            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
 
             // Unique File Name
             String fileName = System.currentTimeMillis()
@@ -265,7 +266,7 @@ public class ResumeService {
                         folder);
 
                 // Original File Name
-                String originalFileName = file.getOriginalFilename();
+                String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
 
                 // Unique File Name
                 String fileName = System.currentTimeMillis()

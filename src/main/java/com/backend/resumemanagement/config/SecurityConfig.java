@@ -1,5 +1,6 @@
 package com.backend.resumemanagement.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,56 +13,48 @@ import com.backend.resumemanagement.security.JwtFilter;
 @Configuration
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+        @Autowired
+        private JwtFilter jwtFilter;
 
-    public SecurityConfig(JwtFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                        HttpSecurity http) throws Exception {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
 
-        http
-                .csrf(csrf -> csrf.disable())
+                                .sessionManagement(session -> session.sessionCreationPolicy(
+                                                SessionCreationPolicy.STATELESS))
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
+                                .authorizeHttpRequests(auth -> auth
 
-                .authorizeHttpRequests(auth -> auth
+                                                // Public APIs
+                                                .requestMatchers(
+                                                                "/api/auth/register",
+                                                                "/api/auth/login",
+                                                                "/error")
+                                                .permitAll()
 
-                        // Public APIs
-                        .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/login"
-                        ).permitAll()
+                                                // Admin APIs
+                                                .requestMatchers(
+                                                                "/api/admin/**")
+                                                .hasRole("ADMIN")
 
-                        // Admin APIs
-                        .requestMatchers(
-                                "/api/admin/**"
-                        ).hasRole("ADMIN")
+                                                // User APIs
+                                                .requestMatchers(
+                                                                "/api/user/**",
+                                                                "/api/resumes/**")
+                                                .hasAnyRole(
+                                                                "USER",
+                                                                "ADMIN")
 
-                        // User APIs
-                        .requestMatchers(
-                                "/api/user/**",
-                                "/api/resumes/**"
-                        ).hasAnyRole(
-                                "USER",
-                                "ADMIN"
-                        )
+                                                .anyRequest()
+                                                .authenticated())
 
-                        .anyRequest()
-                        .authenticated()
-                )
+                                .addFilterBefore(
+                                                jwtFilter,
+                                                UsernamePasswordAuthenticationFilter.class);
 
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
-
-        return http.build();
-    }
+                return http.build();
+        }
 }

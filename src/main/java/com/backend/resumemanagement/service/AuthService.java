@@ -2,7 +2,7 @@ package com.backend.resumemanagement.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import com.backend.resumemanagement.entity.User;
 import com.backend.resumemanagement.repository.UserRepository;
 import com.backend.resumemanagement.security.JwtService;
@@ -10,59 +10,49 @@ import com.backend.resumemanagement.security.JwtService;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
-    private final JwtService jwtService;
+        @Autowired
+        private JwtService jwtService;
 
-    public AuthService(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+        // Register
+        public User register(User user) {
 
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-    }
+                user.setPassword(
+                                passwordEncoder.encode(
+                                                user.getPassword()));
 
-    // Register
-    public User register(User user) {
+                user.setRole("USER");
 
-        user.setPassword(
-                passwordEncoder.encode(
-                        user.getPassword()));
-
-        user.setRole("USER");
-
-        return userRepository.save(user);
-    }
-
-    // Login
-    public String login(
-            String email,
-            String password) {
-
-        User user =
-                userRepository
-                        .findByEmail(email)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "User not found"));
-
-        boolean passwordMatch =
-                passwordEncoder.matches(
-                        password,
-                        user.getPassword());
-
-        if (!passwordMatch) {
-
-            throw new RuntimeException(
-                    "Invalid password");
+                return userRepository.save(user);
         }
 
-        return jwtService.generateToken(
-                user.getEmail(),
-                user.getRole());
-    }
+        // Login
+        public String login(
+                        String email,
+                        String password) {
+
+                User user = userRepository
+                                .findByEmail(email)
+                                .orElseThrow(() -> new RuntimeException(
+                                                "User not found"));
+
+                boolean passwordMatch = passwordEncoder.matches(
+                                password,
+                                user.getPassword());
+
+                if (!passwordMatch) {
+
+                        throw new RuntimeException(
+                                        "Invalid password");
+                }
+
+                return jwtService.generateToken(
+                                user.getEmail(),
+                                user.getRole());
+        }
 }

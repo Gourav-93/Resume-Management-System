@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,11 +28,8 @@ import com.backend.resumemanagement.service.ResumeService;
 @CrossOrigin("*")
 public class ResumeController {
 
-    private final ResumeService resumeService;
-
-    public ResumeController(ResumeService resumeService) {
-        this.resumeService = resumeService;
-    }
+    @Autowired
+    private ResumeService resumeService;
 
     // Upload Resume
     @PostMapping("/upload")
@@ -54,7 +51,7 @@ public class ResumeController {
     }
 
     // Get My Resumes
-    @GetMapping("/my-resumes")
+    @GetMapping({"", "/", "/my-resumes"})
     public List<Resume> getMyResumes(
             Authentication authentication) {
 

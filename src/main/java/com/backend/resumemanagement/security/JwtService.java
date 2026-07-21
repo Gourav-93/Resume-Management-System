@@ -5,12 +5,17 @@ import java.util.Date;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 
 @Service
 public class JwtService {
 
         private final String secretKey = "mySecretKeyForResumeManagementSystem123456789";
+
+        private Key getSigningKey() {
+                return Keys.hmacShaKeyFor(secretKey.getBytes());
+        }
 
         // Generate Token
         public String generateToken(
@@ -34,8 +39,7 @@ public class JwtService {
                                                                                 + 1000 * 60 * 60))
 
                                 .signWith(
-                                                SignatureAlgorithm.HS256,
-                                                secretKey)
+                                                getSigningKey())
 
                                 .compact();
         }
@@ -47,7 +51,7 @@ public class JwtService {
                 return Jwts.parser()
 
                                 .setSigningKey(
-                                                secretKey)
+                                                getSigningKey())
 
                                 .build()
 
@@ -66,7 +70,7 @@ public class JwtService {
                 return Jwts.parser()
 
                                 .setSigningKey(
-                                                secretKey)
+                                                getSigningKey())
 
                                 .build()
 

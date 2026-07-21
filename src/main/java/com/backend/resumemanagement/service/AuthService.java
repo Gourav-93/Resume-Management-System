@@ -19,44 +19,48 @@ public class AuthService {
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService
-    ) {
+            JwtService jwtService) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
+    // Register
     public User register(User user) {
-
         user.setPassword(
-                passwordEncoder.encode(user.getPassword())
+                passwordEncoder.encode(
+                        user.getPassword()
+                )
         );
-
+        user.setRole("USER");
         return userRepository.save(user);
     }
 
-    public String login(String email, String password) {
-
+    // Login
+    public String login(
+            String email,
+            String password) {
         User user = userRepository
                 .findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
-
+                        new RuntimeException(
+                                "User not found"
+                        )
+                );
         boolean passwordMatch =
                 passwordEncoder.matches(
                         password,
                         user.getPassword()
                 );
-
         if (!passwordMatch) {
-
             throw new RuntimeException(
                     "Invalid password"
             );
         }
-
         return jwtService.generateToken(
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
     }
 }

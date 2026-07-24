@@ -121,9 +121,10 @@ public class ResumeService {
 
         Resume resume = getResumeById(id);
 
-        if (!resume.getUser()
-                .getEmail()
-                .equals(email)) {
+        if (resume.getUser() == null ||
+                !resume.getUser()
+                        .getEmail()
+                        .equals(email)) {
 
             throw new RuntimeException(
                     "You are not allowed to access this resume");

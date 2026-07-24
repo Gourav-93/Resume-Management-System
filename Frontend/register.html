@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Premium Resume Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container animate-fade-in-up">
+        <div class="glass-card" style="width: 100%; max-width: 450px;">
+            <div style="text-align: center; margin-bottom: var(--spacing-xl);">
+                <div class="logo justify-center" style="font-size: 2rem; margin-bottom: var(--spacing-xs);">
+                    <i class="fa-solid fa-file-contract"></i> ResumePro
+                </div>
+                <p style="color: var(--text-secondary);">Create a new account</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="admin@example.com" required>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: var(--spacing-xl);">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <span>Sign Up</span>
+                    <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: var(--spacing-lg); color: var(--text-secondary); font-size: 0.875rem;">
+                Already have an account? <a href="index.html" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Overlay for loader -->
+    <div class="loader-overlay" id="globalLoader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

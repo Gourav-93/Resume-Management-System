@@ -8,6 +8,7 @@ import com.backend.resumemanagement.service.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired

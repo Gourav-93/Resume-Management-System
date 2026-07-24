@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Resumes - Premium Resume Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .search-bar {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 1rem;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .resume-card {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .resume-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .resume-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-xs);
+            margin: var(--spacing-sm) 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="dashboard.html" class="logo">
+                <i class="fa-solid fa-file-contract"></i> ResumePro
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="resumes.html" class="nav-link active">All Resumes</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+                <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="btn btn-secondary" id="logoutBtn" style="padding: 0.5rem 1rem;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content container animate-fade-in-up">
+        <div class="flex justify-between items-center" style="margin-bottom: var(--spacing-xl); flex-wrap: wrap; gap: var(--spacing-md);">
+            <div>
+                <h1 style="font-size: 2.5rem; margin-bottom: var(--spacing-xs);">All Resumes</h1>
+                <p style="color: var(--text-secondary);">Manage and view all uploaded candidate resumes.</p>
+            </div>
+            
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-secondary);"></i>
+                <input type="text" id="searchInput" placeholder="Search by name...">
+                <select id="searchType" style="background: transparent; border: none; color: var(--text-primary); border-left: 1px solid var(--border-color); padding-left: var(--spacing-sm); cursor: pointer;">
+                    <option value="name">Name</option>
+                    <option value="skills">Skills</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bento-grid" id="resumesGrid">
+            <!-- Skeleton loaders -->
+            <div class="glass-card skeleton" style="height: 250px;"></div>
+            <div class="glass-card skeleton" style="height: 250px;"></div>
+            <div class="glass-card skeleton" style="height: 250px;"></div>
+            <div class="glass-card skeleton" style="height: 250px;"></div>
+        </div>
+
+        <div id="emptyState" style="display: none; text-align: center; padding: var(--spacing-2xl) 0;">
+            <div style="font-size: 4rem; color: var(--text-secondary); margin-bottom: var(--spacing-md); opacity: 0.5;">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h2 style="margin-bottom: var(--spacing-sm);">No Resumes Found</h2>
+            <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg);">Try adjusting your search or upload a new resume.</p>
+            <a href="upload.html" class="btn btn-primary">Upload Resume</a>
+        </div>
+    </main>
+
+    <!-- Global Elements -->
+    <div class="loader-overlay" id="globalLoader">
+        <div class="spinner"></div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/resumes.js"></script>
+</body>
+</html>

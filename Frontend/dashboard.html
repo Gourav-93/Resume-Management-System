@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Premium Resume Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-container">
+            <a href="dashboard.html" class="logo">
+                <i class="fa-solid fa-file-contract"></i> ResumePro
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="resumes.html" class="nav-link">All Resumes</a>
+                <a href="upload.html" class="nav-link">Upload</a>
+                <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="btn btn-secondary" id="logoutBtn" style="padding: 0.5rem 1rem;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content container animate-fade-in-up">
+        <div class="flex justify-between items-center" style="margin-bottom: var(--spacing-xl);">
+            <div>
+                <h1 style="font-size: 2rem; margin-bottom: var(--spacing-xs);">Welcome Back</h1>
+                <p style="color: var(--text-secondary);">Here's an overview of your uploaded resumes.</p>
+            </div>
+            <a href="upload.html" class="btn btn-primary">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume
+            </a>
+        </div>
+
+        <!-- Bento Grid for Stats -->
+        <div class="bento-grid" style="margin-bottom: var(--spacing-2xl);">
+            <div class="glass-card bento-item">
+                <div style="color: var(--primary-color); font-size: 2rem; margin-bottom: var(--spacing-sm);">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h3 style="color: var(--text-secondary); font-size: 1rem; font-weight: 500;">Total Resumes</h3>
+                <div style="font-size: 2.5rem; font-weight: 700; margin-top: var(--spacing-xs);" id="totalResumesCount">
+                    0
+                </div>
+            </div>
+
+            <div class="glass-card bento-item" style="background: var(--gradient-primary); color: white;">
+                <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h3 style="font-size: 1rem; font-weight: 500; opacity: 0.9;">Quick Actions</h3>
+                <div style="margin-top: var(--spacing-md); display: flex; gap: var(--spacing-sm);">
+                    <a href="upload.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                        <i class="fa-solid fa-plus"></i> New
+                    </a>
+                    <a href="resumes.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Resumes Section -->
+        <div>
+            <div class="flex justify-between items-center" style="margin-bottom: var(--spacing-lg);">
+                <h2 style="font-size: 1.5rem;">Recently Uploaded</h2>
+                <a href="resumes.html" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">View All &rarr;</a>
+            </div>
+            
+            <div class="bento-grid" id="recentResumesGrid">
+                <!-- Skeleton loader placeholders -->
+                <div class="glass-card skeleton" style="height: 200px;"></div>
+                <div class="glass-card skeleton" style="height: 200px;"></div>
+                <div class="glass-card skeleton" style="height: 200px;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Elements -->
+    <div class="loader-overlay" id="globalLoader">
+        <div class="spinner"></div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
